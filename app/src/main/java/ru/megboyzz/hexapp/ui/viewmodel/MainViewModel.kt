@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -34,8 +35,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             kotlin.runCatching {
                 pm.getPackageInfo("ru.megboyzz.hexapp.service", 0)
             }
-                .onFailure { serviceStatus.emit(ServiceStatus.APP_NOT_INSTALLED) }
-                .onSuccess { serviceStatus.emit(ServiceStatus.DISABLED) }
+                .onFailure { emitStatus(ServiceStatus.APP_NOT_INSTALLED) }
+                .onSuccess { emitStatus(ServiceStatus.STOPPED) }
         }
     }
 
@@ -53,8 +54,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 // а тем более включать режим чтения
                 ServiceStatus.APP_NOT_INSTALLED,
                 ServiceStatus.STARTING,
-                ServiceStatus.DISABLING,
-                ServiceStatus.LOADING_INFO -> {
+                ServiceStatus.STOPPING,
+                ServiceStatus.LOADING_INFO,
+                ServiceStatus.TOGGLING_READING_MODE,
+                ServiceStatus.LEAVE_READING_MODE -> {
                     isReadButtonEnabled.emit(false)
                     isRunServiceButtonEnabled.emit(false)
                 }
@@ -62,14 +65,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 //В случае если сервис просто выключен
                 // то нудно включить кнопку для запуска сервиса
                 // но при этом конпка чтения не должна работать
-                ServiceStatus.DISABLED -> {
+                ServiceStatus.STOPPED -> {
                     isRunServiceButtonEnabled.emit(true)
                     isReadButtonEnabled.emit(false)
                 }
 
                 //В случае если сервис включен то можно и кнопку
                 // включения режима чтения включить
-                ServiceStatus.ENABLED -> {
+                ServiceStatus.STARTED -> {
                     isRunServiceButtonEnabled.emit(true)
                     isReadButtonEnabled.emit(true)
                 }
@@ -88,12 +91,46 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    //Вырезать метод когда кнопки начнут работать нормально
-    fun nextStatus(){
+
+    //При кажом изменении статуса, нужно и изменять состояние кнопок
+    private suspend fun emitStatus(status: ServiceStatus){
+        serviceStatus.emit(status)
+        calculateButtonsState()
+    }
+
+    fun startService(){
         viewModelScope.launch(Dispatchers.IO) {
-            var next = serviceStatus.value.ordinal + 1
-            if(next > ServiceStatus.values().size - 1) next = 0
-            serviceStatus.emit(ServiceStatus.values()[next])
+            emitStatus(ServiceStatus.STARTING)
+            delay(1000)
+            emitStatus(ServiceStatus.STARTED)
+            calculateButtonsState()
+        }
+    }
+
+    fun stopService(){
+        viewModelScope.launch(Dispatchers.IO) {
+            emitStatus(ServiceStatus.STOPPING)
+            delay(1000)
+            emitStatus(ServiceStatus.STOPPED)
+            calculateButtonsState()
+        }
+    }
+
+    fun toggleIntoReadingMode(){
+        viewModelScope.launch(Dispatchers.IO) {
+            emitStatus(ServiceStatus.TOGGLING_READING_MODE)
+            delay(1000)
+            emitStatus(ServiceStatus.READING_MODE)
+            calculateButtonsState()
+        }
+    }
+
+    fun leaveFormReadingMode(){
+        viewModelScope.launch(Dispatchers.IO) {
+            emitStatus(ServiceStatus.LEAVE_READING_MODE)
+            delay(1000)
+            emitStatus(ServiceStatus.STARTED)
+            calculateButtonsState()
         }
     }
 
