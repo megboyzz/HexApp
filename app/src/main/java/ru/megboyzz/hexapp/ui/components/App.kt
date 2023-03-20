@@ -3,11 +3,11 @@ package ru.megboyzz.hexapp.ui.components
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +31,8 @@ fun App() {
 
     val isRunEnabled by viewModel.isRunServiceButtonEnabled.collectAsState()
     val isReadEnabled by viewModel.isReadButtonEnabled.collectAsState()
+
+    val hexList by viewModel.hexList.collectAsState()
 
     MainScaffold {
 
@@ -67,6 +69,15 @@ fun App() {
                 text = "HEX Коды",
                 style = text
             )
+
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(10.dp)
+            ){
+                items(hexList){ HexCard(hexString = it) }
+            }
+
         }
 
     }
