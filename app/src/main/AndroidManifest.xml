@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <queries>
-        <package android:name="ru.megboyzz.hexapp.service"/>
+        <package android:name="ru.megboyzz.hexapp.service" />
     </queries>
 
     <application
@@ -15,6 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HexApp"
         tools:targetApi="31">
+        <receiver
+            android:name=".HexServiceReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ru.megboyzz.hexapp.action.RESULT_STATUS" />
+                <action android:name="ru.megboyzz.hexapp.action.ON_NEW_HEX" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

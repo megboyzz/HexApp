@@ -12,9 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.megboyzz.hexapp.MainActivity
 import ru.megboyzz.hexapp.ui.theme.text
-import ru.megboyzz.hexapp.ui.viewmodel.MainViewModel
-import ru.megboyzz.hexapp.ui.viewmodel.MainViewModelFactory
-import ru.megboyzz.hexapp.ui.viewmodel.ServiceStatus
+import ru.megboyzz.hexapp.viewmodel.MainViewModel
+import ru.megboyzz.hexapp.viewmodel.MainViewModelFactory
+import ru.megboyzz.hexapp.viewmodel.ServiceStatus
 
 @Preview
 @Composable

@@ -1,4 +1,4 @@
-package ru.megboyzz.hexapp.ui.viewmodel
+package ru.megboyzz.hexapp.viewmodel
 
 enum class ServiceStatus(private val message: String) {
 

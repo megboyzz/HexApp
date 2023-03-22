@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.START_BACKGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
+        <!-- Ресивер для получения статуса режима чтения -->
+        <receiver
+            android:name=".StatusReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ru.megboyzz.hexapp.action.TOGGLE_READING_MODE"/>
+                <action android:name="ru.megboyzz.hexapp.action.LEAVE_READING_MODE" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".HexService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ru.megboyzz.hexapp.service.HexService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

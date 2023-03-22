@@ -1,6 +1,7 @@
 package ru.megboyzz.hexapp.ui.components
 
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,11 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.megboyzz.hexapp.ui.theme.*
-import ru.megboyzz.hexapp.ui.viewmodel.MainViewModel
-import ru.megboyzz.hexapp.ui.viewmodel.MainViewModelFactory
-import ru.megboyzz.hexapp.ui.viewmodel.ServiceStatus
+import ru.megboyzz.hexapp.util.runningIntentValue
+import ru.megboyzz.hexapp.util.statusIntentParam
+import ru.megboyzz.hexapp.util.statusResultAction
+import ru.megboyzz.hexapp.viewmodel.MainViewModel
+import ru.megboyzz.hexapp.viewmodel.MainViewModelFactory
+import ru.megboyzz.hexapp.viewmodel.ServiceStatus
 
 
 //Главный компонент приложения
@@ -25,7 +30,9 @@ fun App() {
 
     val mainActivity = LocalContext.current as Activity
 
-    val viewModel: MainViewModel = viewModel(factory = MainViewModelFactory(mainActivity.application))
+    val viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(mainActivity.application),
+    )
 
     val status by viewModel.serviceStatus.collectAsState()
 
